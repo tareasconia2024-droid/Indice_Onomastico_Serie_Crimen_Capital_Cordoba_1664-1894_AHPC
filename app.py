@@ -261,5 +261,8 @@ def estadisticas():
                          por_tipo_acto=por_tipo_acto)
 
 if __name__ == '__main__':
-    print("🚀 INICIANDO APLICACIÓN FLASK")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    import os
+    # Firebase/Render nos darán el puerto en una variable de entorno
+    port = int(os.environ.get('PORT', 5000)) 
+    print(f"🚀 INICIANDO APLICACIÓN EN PUERTO {port}")
+    app.run(host='0.0.0.0', port=port)
