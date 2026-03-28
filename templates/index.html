@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+    <div class="col-lg-8">
+        <h1 class="h2 fw-bold text-primary mb-3 mt-4">Fondo: Poder Judicial de la Provincia de Córdoba. Juzgados del Crimen.</h1>
+        <h4 class="text-light fw-normal mb-4">Serie: CRIMEN CAPITAL [Ciudad de Córdoba y campaña] (1664-1894)</h4>
+        <p class="lead text-secondary mb-4">
+            Sistema de consulta y recuperación de datos del Archivo Histórico de la Provincia de Córdoba. <br>
+            Permite la búsqueda rápida de expedientes criminales del período 1664 al 1894.
+        </p>
+        <div class="d-flex gap-3">
+            <a href="/buscar" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+                <i class="fa-solid fa-magnifying-glass me-2"></i> Iniciar Búsqueda
+            </a>
+            <a href="/estadisticas" class="btn btn-outline-light btn-lg rounded-pill px-4">
+                <i class="fa-solid fa-chart-pie me-2"></i> Ver Estadísticas
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4 d-none d-lg-block text-center">
+        <!-- Ícono decorativo grande -->
+        <i class="fa-solid fa-book-open-reader text-secondary opacity-25" style="font-size: 15rem;"></i>
+    </div>
+</div>
+
+<!-- Tarjetas de estadísticas rápidas -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card bg-darker border-primary border-start border-4 h-100 shadow-sm transition-hover">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted fw-normal mb-0">Total Registros</h5>
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary">
+                        <i class="fa-solid fa-file-lines fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-light mb-0">{{ "{:,}".format(stats.total_registros).replace(',', '.') }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-darker border-info border-start border-4 h-100 shadow-sm transition-hover">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted fw-normal mb-0">Período Abarcado</h5>
+                    <div class="bg-info bg-opacity-10 p-2 rounded-circle text-info">
+                        <i class="fa-solid fa-calendar-days fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-light mb-0">{{ stats.año_inicio }} - {{ stats.año_fin }}</h2>
+                <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">Años registrados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-darker border-warning border-start border-4 h-100 shadow-sm transition-hover">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-muted fw-normal mb-0">Total de Causas</h5>
+                    <div class="bg-warning bg-opacity-10 p-2 rounded-circle text-warning">
+                        <i class="fa-solid fa-scale-balanced fs-5"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-light mb-0">{{ "{:,}".format(stats.total_tipos).replace(',', '.') }}</h2>
+                <p class="text-muted mt-1 mb-0" style="font-size: 0.8rem;">Causas distintas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-darker border-secondary shadow-sm">
+            <div class="card-header bg-black border-secondary py-3">
+                <h5 class="mb-0 text-light"><i class="fa-solid fa-circle-info text-info me-2"></i> Sobre la herramienta</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6 border-end border-secondary pe-md-4">
+                        <h6 class="text-primary fw-bold mb-3">Funcionalidades</h6>
+                        <ul class="list-unstyled text-secondary">
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Búsqueda por múltiples criterios combinados</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Autocompletado inteligente de apellidos</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Búsqueda a texto libre en todo el documento</li>
+                            <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Exportación de planillas de resultados a PDF</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 ps-md-4 mt-4 mt-md-0">
+                        <h6 class="text-primary fw-bold mb-3">Consejos de búsqueda</h6>
+                        <ul class="list-unstyled text-secondary">
+                            <li class="mb-2"><i class="fa-solid fa-lightbulb text-warning me-2"></i> Use el texto libre para buscar palabras clave en el resumen o carátula</li>
+                            <li class="mb-2"><i class="fa-solid fa-lightbulb text-warning me-2"></i> Limite por rango de años para afinar resultados amplios</li>
+                            <li class="mb-2"><i class="fa-solid fa-lightbulb text-warning me-2"></i> Puede combinar campos (ej: Apellido + Tipo de Acto)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

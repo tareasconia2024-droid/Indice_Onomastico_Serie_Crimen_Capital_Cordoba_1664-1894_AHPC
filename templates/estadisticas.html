@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-info">Inicio</a></li>
+                <li class="breadcrumb-item active text-light" aria-current="page">Estadísticas y Métricas</li>
+            </ol>
+        </nav>
+        <h2 class="text-primary border-bottom border-secondary pb-2">
+            <i class="fa-solid fa-chart-pie me-2"></i> Estadísticas y Métricas Generales
+        </h2>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Gráfico por Tipo de Acto -->
+    <div class="col-lg-6">
+        <div class="card bg-dark border-secondary shadow h-100">
+            <div class="card-header bg-black border-secondary py-3">
+                <h5 class="mb-0 text-light"><i class="fa-solid fa-scale-balanced me-2 text-warning"></i> Expedientes por Tipo de Acto</h5>
+            </div>
+            <div class="card-body p-4 bg-darker text-center">
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="chartTipos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Gráfico por Décadas -->
+    <div class="col-lg-6">
+        <div class="card bg-dark border-secondary shadow h-100">
+            <div class="card-header bg-black border-secondary py-3">
+                <h5 class="mb-0 text-light"><i class="fa-solid fa-calendar-days me-2 text-info"></i> Distribución Cronológica (por Década)</h5>
+            </div>
+            <div class="card-body p-4 bg-darker">
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="chartDecadas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Top 20 Apellidos -->
+    <div class="col-12">
+        <div class="card bg-dark border-secondary shadow">
+            <div class="card-header bg-black border-secondary py-3">
+                <h5 class="mb-0 text-light"><i class="fa-solid fa-users me-2 text-primary"></i> Top 20 Apellidos más frecuentes</h5>
+            </div>
+            <div class="card-body p-4 bg-darker">
+                <div style="position: relative; height: 400px; width: 100%;">
+                    <canvas id="chartApellidos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Configuración global para Chart.js en tema oscuro
+Chart.defaults.color = '#adb5bd';
+Chart.defaults.borderColor = '#495057';
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Gráfico de Tipos de Acto
+    const dataTipos = {{ por_tipo_acto | tojson }};
+    const ctxTipos = document.getElementById('chartTipos').getContext('2d');
+    
+    // Preparar datos, agrupando los de menor porcentaje en "Otros" si son muchos
+    let tiposLabels = [];
+    let tiposData = [];
+    let otrosCount = 0;
+    
+    dataTipos.forEach((item, index) => {
+        if (index < 7) {
+            tiposLabels.push(item.tipo_acto);
+            tiposData.push(item.total);
+        } else {
+            otrosCount += item.total;
+        }
+    });
+    
+    if (otrosCount > 0) {
+        tiposLabels.push('Otros menores');
+        tiposData.push(otrosCount);
+    }
+    
+    new Chart(ctxTipos, {
+        type: 'pie',
+        data: {
+            labels: tiposLabels,
+            datasets: [{
+                data: tiposData,
+                backgroundColor: [
+                    'rgba(13, 110, 253, 0.7)',
+                    'rgba(25, 135, 84, 0.7)',
+                    'rgba(220, 53, 69, 0.7)',
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(13, 202, 240, 0.7)',
+                    'rgba(214, 51, 132, 0.7)',
+                    'rgba(111, 66, 193, 0.7)',
+                    'rgba(108, 117, 125, 0.7)'
+                ],
+                borderColor: '#212529',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { boxWidth: 15 } },
+                tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.raw + ' expedientes'; } } }
+            }
+        }
+    });
+    
+    // 2. Gráfico por Décadas
+    const dataDecadas = {{ por_decada | tojson }};
+    const ctxDecadas = document.getElementById('chartDecadas').getContext('2d');
+    
+    new Chart(ctxDecadas, {
+        type: 'bar',
+        data: {
+            labels: dataDecadas.map(d => d.decada + 's'),
+            datasets: [{
+                label: ' Expedientes',
+                data: dataDecadas.map(d => d.total),
+                backgroundColor: 'rgba(13, 202, 240, 0.6)',
+                borderColor: 'rgba(13, 202, 240, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                x: { grid: { display: false } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+    
+    // 3. Gráfico de Apellidos
+    const dataApellidos = {{ top_apellidos | tojson }};
+    const ctxAp = document.getElementById('chartApellidos').getContext('2d');
+    
+    new Chart(ctxAp, {
+        type: 'bar',
+        data: {
+            labels: dataApellidos.map(a => a.apellido),
+            datasets: [{
+                label: ' Expedientes',
+                data: dataApellidos.map(a => a.total),
+                backgroundColor: 'rgba(13, 110, 253, 0.6)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // Gráfico horizontal (más legible para muchos textos)
+            scales: {
+                x: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                y: { grid: { display: false } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+    
+});
+</script>
+{% endblock %}

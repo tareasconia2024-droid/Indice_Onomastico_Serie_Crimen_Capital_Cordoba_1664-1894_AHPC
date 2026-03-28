@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+        <h2 class="text-primary border-bottom border-secondary pb-2">Expediente #{{ registro.id }}</h2>
+        <div class="card bg-dark border-secondary shadow-lg mt-4">
+            <div class="card-header bg-black text-light"><i class="fa-solid fa-file-signature me-2"></i> Detalle Principal</div>
+            <div class="card-body p-4 bg-darker">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label class="text-muted fw-bold">Partes (Actor / Imputado)</label>
+                        <h4 class="text-light">{{ registro.partes }}</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted fw-bold">Año</label>
+                        <h4 class="text-info">{{ registro.año }}</h4>
+                    </div>
+                </div>
+                <div class="row g-4 mb-4 bg-dark p-3 border border-secondary">
+                    <div class="col-md-3">
+                        <label class="text-muted small">Inventario</label>
+                        <p class="text-light">{{ registro.inventario }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Fondo</label>
+                        <p class="text-light">{{ registro.fondo }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Subfondo</label>
+                        <p class="text-light">{{ registro.subfondo }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Serie</label>
+                        <p class="text-light">{{ registro.serie }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Legajo</label>
+                        <p class="text-light">{{ registro.legajo }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Expediente</label>
+                        <p class="text-warning fw-bold">{{ registro.expediente }}</p>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <h5 class="text-primary border-bottom border-secondary pb-2">Causa / Carátula</h5>
+                    <div class="bg-dark p-3 border border-secondary text-light fs-5">{{ registro.causa }}</div>
+                </div>
+                <div class="text-center mt-4">
+                    <button onclick="window.history.back()" class="btn btn-outline-primary px-5">Volver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
